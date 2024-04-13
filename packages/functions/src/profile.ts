@@ -3,9 +3,6 @@ import { handle } from "hono/aws-lambda";
 
 const app = new Hono();
 
-app.get("/", (c) => {
-  return c.json({ message: "Hello from the back for Reminder Realm!" });
-});
 app.get("/profile", (c) => {
   return c.json({ message: "Hello!" });
 });

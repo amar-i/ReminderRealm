@@ -1,27 +1,20 @@
 import { Hono } from "hono";
 import { handle } from "hono/aws-lambda";
-import { todo } from "node:test";
-
+import { todo as todoTable } from "@ReminderRealm/core/db/schema/todo";
+import { db } from "@ReminderRealm/core/db";
 const app = new Hono();
 
-const fakeTodo = [
-  { id: 1, text: "Buy milk", done: false },
-  { id: 2, text: "Walk the dog", done: true },
-  { id: 3, text: "Write code", done: false },
-];
-
-app.get("/todo", (c) => {
-  return c.json({ todo: fakeTodo });
+app.get("/todo", async (c) => {
+  const todo = await db.select().from(todoTable);
+  return c.json({ todo });
 });
 
 app.post("/todo", async (c) => {
   const body = await c.req.json();
   const todo = body.todo;
-  fakeTodo.push({
-    id: (fakeTodo.length + 1).toString(),
-    ...todo,
-  });
-  return c.json({ todo: fakeTodo });
+  const newTodo = await db.insert(todoTable).values(todo).returning();
+  return c.json({ todo: newTodo });
 });
+
 
 export const handler = handle(app);

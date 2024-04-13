@@ -7,6 +7,7 @@ export function API({ stack }: StackContext) {
       "GET /todo": "packages/functions/src/todo.handler",
       "POST /todo": "packages/functions/src/todo.handler",
       "PUT /todo/{id}": "packages/functions/src/todo.handler",
+      "GET /profile": "packages/functions/src/profile.handler",
     },
   });
 

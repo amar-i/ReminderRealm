@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { useQuery } from "react-query";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -8,26 +10,29 @@ export const Route = createFileRoute("/")({
 
 type Todo = {
   id: string;
-  text: string;
+  todo: string;
   done: boolean;
+  due: string;
 };
 
-async function getTodo() {
-  const res = await fetch(import.meta.env.VITE_APP_API_URL + "/todo");
+function HomePage() {
+  const [todoText, setTodoText] = useState("");
+  const [due, setDue] = useState<Date | null>(null);
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch todos");
+  async function getTodo() {
+    const res = await fetch(import.meta.env.VITE_APP_API_URL + "/todo");
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch todos");
+    }
+
+    return (await res.json()) as { todo: Todo[] };
   }
 
-  return (await res.json()) as { todo: Todo[] };
-}
-
-function HomePage() {
-  const { isPending, error, data } = useQuery("getTodo", getTodo);
-
-  const [todo, setTodo] = useState<Todo[]>([]);
-  const [done, setDone] = useState(false);
-  const [text, setText] = useState("");
+  const { isPending, error, data, refetch } = useQuery({
+    queryKey: ["getTodo"],
+    queryFn: getTodo,
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,30 +41,47 @@ function HomePage() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ todo: { text, done } }),
+      body: JSON.stringify({ todo: { todo: todoText, completed: false, due } }), // Use todoText instead of todo
     });
-    const data = await res.json();
-    setTodo(data.todo);
-    setText("");
-    setDone(false);
+    if (!res.ok) {
+      throw new Error("Failed to add todo");
+    }
+    // Manually trigger a re-fetch of the todo list data after adding a new item
+    refetch();
+    setTodoText(""); // Reset todoText after submission
+    setDue(null); // Reset due after submission
   };
 
+  function formatDate(dateString: string) {
+    if (!dateString) return ""; // Return empty string if dateString is null or undefined
+    const date = new Date(dateString);
+
+    // Adjust the date by the time zone offset
+    const adjustedDate = new Date(
+      date.getTime() + date.getTimezoneOffset() * 60000
+    );
+
+    return adjustedDate.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
   return (
     <div className="App">
       <h1>Reminders</h1>
-      {error ? (
-        <div>An error occurred: {error.message}</div>
-      ) : isPending ? (
+      {error && <div>An error occurred: {error.message}</div>}
+      {isPending ? (
         <div>Loading...</div>
       ) : (
         <div className="card">
-          {data?.todo.map((t) => (
-            <div key={t.id}>
-              <input type="checkbox" checked={t.done} />
+          {data?.todo.map((data) => (
+            <div key={data.id}>
+              <input type="checkbox" checked={data.done} />
               <span
-                style={{ textDecoration: t.done ? "line-through" : "none" }}
+                style={{ textDecoration: data.done ? "line-through" : "none" }}
               >
-                {t.text}
+                {data.todo} - Due on:{formatDate(data.due)}
               </span>
             </div>
           ))}
@@ -67,11 +89,17 @@ function HomePage() {
       )}
 
       <form onSubmit={handleSubmit}>
+        <h2>Add Todo</h2>
         <input
           type="text"
           placeholder="Add todo..."
-          value={text}
-          onChange={(e) => setText(e.target.value)}
+          value={todoText}
+          onChange={(e) => setTodoText(e.target.value)}
+        />
+        <DatePicker // Use DatePicker for due
+          selected={due}
+          onChange={(date) => setDue(date)}
+          placeholderText="Due"
         />
         <button type="submit">Add</button>
       </form>

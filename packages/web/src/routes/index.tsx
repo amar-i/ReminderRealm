@@ -52,7 +52,7 @@ function HomePage() {
     setDue(null); // Reset due after submission
   };
 
-  function formatDate(dateString) {
+  function formatDate(dateString: string) {
     if (!dateString) return ""; // Return empty string if dateString is null or undefined
     const date = new Date(dateString);
 

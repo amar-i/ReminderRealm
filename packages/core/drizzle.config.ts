@@ -5,7 +5,7 @@ dotenv.config({
 });
 
 export default defineConfig({
-  schema: "./src/db/schema/todo.ts",
+  schema: "./src/db/schema/*",
   driver: "pg",
   dbCredentials: {
     connectionString: process.env.DRIZZLE_DATABASE_URL!,

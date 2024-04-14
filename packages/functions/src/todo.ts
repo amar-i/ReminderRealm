@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { handle } from "hono/aws-lambda";
 import { todo as todoTable } from "@ReminderRealm/core/db/schema/todo";
 import { db } from "@ReminderRealm/core/db";
+
 const app = new Hono();
 
 app.get("/todo", async (c) => {
@@ -11,10 +12,12 @@ app.get("/todo", async (c) => {
 
 app.post("/todo", async (c) => {
   const body = await c.req.json();
-  const todo = body.todo;
+  const todo = {
+    ...body.todo,
+    userId: "dummy-user-id",
+  };
   const newTodo = await db.insert(todoTable).values(todo).returning();
   return c.json({ todo: newTodo });
 });
-
 
 export const handler = handle(app);

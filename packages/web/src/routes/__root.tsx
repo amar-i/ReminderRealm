@@ -1,16 +1,27 @@
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
+import {
+  createRootRouteWithContext,
+  Link,
+  Outlet,
+} from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { currentUserQueryOptions } from "../auth";
+import { QueryClient } from "@tanstack/react-query";
 
-export const Route = createRootRoute({
-  component: Root,
-});
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
+  {
+    component: Root,
+  }
+);
 
 function Root() {
+  const currentUserQuery = useQuery(currentUserQueryOptions);
+
   return (
     <>
       <div className="nav">
-        <Link to="/">Home</Link>
         <Link to="/about">About</Link>
-        <Link to="/profile">Profile</Link>
+        {currentUserQuery.data ? <Link to="/">Todo List</Link> : null}
+        {currentUserQuery.data ? <Link to="/profile">Profile</Link> : null}
       </div>
       <hr />
       <Outlet />

@@ -9,6 +9,7 @@ body,
   height: 100vh;
 }
 
+.login-container,
 .about-container,
 .profile-container,
 .App {

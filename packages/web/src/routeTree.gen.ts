@@ -13,7 +13,8 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as ProfileImport } from './routes/profile'
 import { Route as AboutImport } from './routes/about'
-import { Route as IndexImport } from './routes/index'
+import { Route as AuthenticatedImport } from './routes/_authenticated'
+import { Route as AuthenticatedIndexImport } from './routes/_authenticated/index'
 
 // Create/Update Routes
 
@@ -27,17 +28,22 @@ const AboutRoute = AboutImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexRoute = IndexImport.update({
-  path: '/',
+const AuthenticatedRoute = AuthenticatedImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRoute,
+} as any)
+
+const AuthenticatedIndexRoute = AuthenticatedIndexImport.update({
+  path: '/',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      preLoaderRoute: typeof IndexImport
+    '/_authenticated': {
+      preLoaderRoute: typeof AuthenticatedImport
       parentRoute: typeof rootRoute
     }
     '/about': {
@@ -48,13 +54,17 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileImport
       parentRoute: typeof rootRoute
     }
+    '/_authenticated/': {
+      preLoaderRoute: typeof AuthenticatedIndexImport
+      parentRoute: typeof AuthenticatedImport
+    }
   }
 }
 
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren([
-  IndexRoute,
+  AuthenticatedRoute.addChildren([AuthenticatedIndexRoute]),
   AboutRoute,
   ProfileRoute,
 ])

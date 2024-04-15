@@ -1,0 +1,89 @@
+/* CustomDatePicker.css */
+.react-datepicker {
+  background-color: #333; /* Dark background */
+  border: 1px solid #555; /* Slightly lighter border for contrast */
+  color: white; /* White text */
+  border-radius: 8px; /* Rounded corners */
+}
+
+.react-datepicker__header {
+  background-color: #444; /* Darker background for the header */
+  border-bottom: 1px solid #555; /* Matching border color */
+}
+
+.react-datepicker__current-month,
+.react-datepicker__navigation-icon,
+.react-datepicker__current-year,
+.react-datepicker__day-name {
+  color: white; /* White text for the header text and day names */
+}
+
+.react-datepicker__day,
+.react-datepicker__month-text,
+.react-datepicker__quarter-text,
+.react-datepicker__year-text {
+  color: white; /* White text for the numbers */
+  border-radius: 8px; /* Rounded corners for days */
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__month-text.react-datepicker__month--selected,
+.react-datepicker__quarter-text.react-datepicker__quarter--selected,
+.react-datepicker__year-text.react-datepicker__year--selected {
+  background-color: #666; /* Slightly lighter background for the selected day */
+  color: white;
+}
+
+.react-datepicker__day--today {
+  font-weight: bold; /* Make the current day bold */
+}
+
+.react-datepicker__day:hover,
+.react-datepicker__day--keyboard-selected,
+.react-datepicker__month-text:hover,
+.react-datepicker__quarter-text:hover,
+.react-datepicker__year-text:hover {
+  background-color: #555; /* Background for hovered day */
+  color: white;
+}
+
+.react-datepicker__navigation {
+  top: 10px; /* Adjust the navigation arrow position */
+  color: white; /* Color of arrows */
+}
+
+.react-datepicker__navigation:hover {
+  color: #aaa; /* Hover color for navigation arrows */
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: white; /* Adjust the arrow color */
+}
+
+/* Adjust the triangle indicators for the dropdowns */
+.react-datepicker__triangle {
+  display: none; /* Hide default triangle */
+}
+
+/* Custom styles for dropdowns (if they are used) */
+.react-datepicker__month-dropdown-container,
+.react-datepicker__year-dropdown-container,
+.react-datepicker__month-year-dropdown-container,
+.react-datepicker__month-dropdown,
+.react-datepicker__year-dropdown,
+.react-datepicker__month-year-dropdown {
+  background-color: #333;
+  color: white;
+}
+
+/* Custom styles for the input field */
+.custom-datepicker input {
+  background-color: #333; /* Dark background for the input */
+  color: white; /* White text for the input */
+  border: 1px solid #555; /* Slightly lighter border for contrast */
+}
+
+/* If there are specific classes in your component, like "custom-datepicker", add those styles too */
+.custom-datepicker {
+  /* Additional custom styles specific to your component's class */
+}

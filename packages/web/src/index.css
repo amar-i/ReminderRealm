@@ -19,8 +19,21 @@ body,
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+
+  padding: 1.5rem;
 }
 
+.profile-container h1 {
+  border-bottom: solid 2px #cebc81;
+  color: #cebc81;
+}
+.userInfo {
+  color: #a16e83;
+}
+.about-container h1 {
+  color: #cebc81;
+}
 .nav {
   width: 100%;
   height: 60px;
@@ -43,7 +56,7 @@ body,
   font-weight: bold;
 }
 hr {
-  margin: 0;
+  margin-bottom: 3rem;
   color: #a16e83;
 }
 
@@ -119,4 +132,90 @@ hr {
   100% {
     background-position: 0 0;
   }
+}
+
+.todo-info,
+form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+form h2 {
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
+
+.todo-input {
+  margin-bottom: 1rem;
+  height: 30px;
+  width: 220px;
+  background-color: #19181a;
+  border: solid 0.5px #479461;
+}
+
+input checkbox {
+  background-color: #19181a;
+}
+.todo-input:focus {
+  border-color: #a16e83;
+}
+.todo-input::placeholder {
+  text-align: center;
+}
+
+#todo-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
+/* Directly target the checkbox input */
+input[type="checkbox"].checkbox-container {
+  -webkit-appearance: none; /* Remove default styling for WebKit browsers */
+  -moz-appearance: none; /* Remove default styling for Mozilla browsers */
+  appearance: none; /* Remove default styling */
+
+  width: 10px;
+  height: 10px;
+  background-color: #19181a; /* The desired background color */
+  border: 1px solid #ddd; /* A border to distinguish the checkbox */
+  border-radius: 50%; /* This will make the checkbox circular */
+  cursor: pointer; /* Change the cursor to a pointer to indicate it's clickable */
+}
+
+/* Style for when the checkbox is checked */
+input[type="checkbox"].checkbox-container:checked {
+  background-color: #a16e83; /* Change color when checked */
+}
+
+.card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.todo-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* This will push the todo and due date to opposite ends */
+  padding: 10px 0; /* Add some vertical padding */
+  border-bottom: 1px solid #333; /* Add a subtle separator */
+}
+
+.todo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* This creates some space between the checkbox and the todo text */
+}
+
+.due {
+  font-size: 9px;
+  color: #a16e83;
 }

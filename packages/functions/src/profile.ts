@@ -4,7 +4,7 @@ import { handle } from "hono/aws-lambda";
 const app = new Hono();
 
 app.get("/profile", (c) => {
-  let loggedIn = false;
+  let loggedIn = true;
   if (!loggedIn) {
     return c.json({ error: "You must be logged in to view this page." }, 401);
   }

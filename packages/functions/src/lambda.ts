@@ -6,8 +6,5 @@ const app = new Hono();
 app.get("/", (c) => {
   return c.json({ message: "Hello from the back for Reminder Realm!" });
 });
-app.get("/profile", (c) => {
-  return c.json({ message: "Hello!" });
-});
 
 export const handler = handle(app);

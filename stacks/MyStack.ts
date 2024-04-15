@@ -1,7 +1,10 @@
-import { StackContext, Api, StaticSite } from "sst/constructs";
+import { StackContext, Api, StaticSite, Bucket } from "sst/constructs";
 
 export function API({ stack }: StackContext) {
   const audience = `api-ReminderRealm-${stack.stage}`;
+
+  const assetsBucket = new Bucket(stack, "assets");
+
   const api = new Api(stack, "api", {
     authorizers: {
       myAuthorizer: {
@@ -13,6 +16,7 @@ export function API({ stack }: StackContext) {
       },
     },
     defaults: {
+      authorizer: "myAuthorizer",
       function: {
         environment: {
           DRIZZLE_DATABASE_URL: process.env.DRIZZLE_DATABASE_URL!,
@@ -20,7 +24,12 @@ export function API({ stack }: StackContext) {
       },
     },
     routes: {
-      "GET /": "packages/functions/src/lambda.handler",
+      "GET /": {
+        authorizer: "none",
+        function: {
+          handler: "packages/functions/src/lambda.handler",
+        },
+      },
       "GET /todo": "packages/functions/src/todo.handler",
       "POST /todo": "packages/functions/src/todo.handler",
       "DELETE /todo/{id}": "packages/functions/src/todo.handler",

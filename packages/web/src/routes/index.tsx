@@ -17,12 +17,23 @@ type Todo = {
 };
 
 function HomePage() {
+  const { getToken } = useKindeAuth();
   const [todoText, setTodoText] = useState("");
   const [due, setDue] = useState<Date | null>(null);
   const { isAuthenticated, login, register } = useKindeAuth();
 
   async function getTodo() {
-    const res = await fetch(import.meta.env.VITE_APP_API_URL + "/todo");
+    const token = await getToken();
+
+    if (!token) {
+      throw new Error("No token available");
+    }
+
+    const res = await fetch(import.meta.env.VITE_APP_API_URL + "/todo", {
+      headers: {
+        Authorization: token,
+      },
+    });
 
     if (!res.ok) {
       throw new Error("Failed to fetch todos");
@@ -37,10 +48,15 @@ function HomePage() {
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
+    const token = await getToken();
+    if (!token) {
+      throw new Error("No token available");
+    }
     e.preventDefault();
     const res = await fetch(import.meta.env.VITE_APP_API_URL + "/todo", {
       method: "POST",
       headers: {
+        Authorization: token,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ todo: { todo: todoText, completed: false, due } }), // Use todoText instead of todo

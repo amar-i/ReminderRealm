@@ -1,32 +1,32 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { currentUserQueryOptions } from "../auth";
-
-export const Route = createFileRoute("/_authenticated")({
-  component: Authenticated,
-  beforeLoad: async ({ context }) => {
-    const { queryClient } = context;
-    // make the request to the server to check if we're logged in
-    try {
-      const user = await queryClient.fetchQuery(currentUserQueryOptions);
-      return { user };
-    } catch (error) {
-      return { user: null };
-    }
-  },
-});
-
-function Authenticated() {
-  const { user } = Route.useRouteContext();
-  if (!user) {
-    return <Login />;
-  }
-  return <Outlet />;
-}
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 function Login() {
+  const { login, register } = useKindeAuth();
+
   return (
     <div className="login-container">
-      <h1> You must Login</h1>
+      <h1>Welcome to Reminder Realm</h1>
+
+      <p>Please login to continue</p>
+      <button className="glow-on-hover" onClick={() => login()}>
+        Login
+      </button>
+      <button className="glow-on-hover" onClick={() => register()}>
+        Register
+      </button>
     </div>
   );
 }
+
+const Component = () => {
+  const isAuthenticated = useKindeAuth();
+  if (!isAuthenticated) {
+    return <Login />;
+  }
+  return <Outlet />;
+};
+
+export const Route = createFileRoute("/_authenticated")({
+  component: Component,
+});

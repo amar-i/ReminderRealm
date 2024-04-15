@@ -3,9 +3,8 @@ import {
   Link,
   Outlet,
 } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { currentUserQueryOptions } from "../auth";
 import { QueryClient } from "@tanstack/react-query";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -14,14 +13,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 );
 
 function Root() {
-  const currentUserQuery = useQuery(currentUserQueryOptions);
-
+  const { isAuthenticated } = useKindeAuth();
   return (
     <>
       <div className="nav">
+        <Link to="/">Todo List</Link>
         <Link to="/about">About</Link>
-        {currentUserQuery.data ? <Link to="/">Todo List</Link> : null}
-        {currentUserQuery.data ? <Link to="/profile">Profile</Link> : null}
+        {isAuthenticated && <Link to="/profile">Profile</Link>}
       </div>
       <hr />
       <Outlet />

@@ -16,7 +16,7 @@ function About() {
         ReminderRealm is here to help you stay organized and on track.
       </p>
 
-      <h2>Our Mission</h2>
+      <h1>Our Mission</h1>
       <p>
         At ReminderRealm, we believe that effective task management should be
         accessible to everyone. That's why we've created an app that not only

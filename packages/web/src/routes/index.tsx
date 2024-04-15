@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import DatePicker from "react-datepicker";
+import DatePicker from "../components/ui/datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import "../components/ui/datepicker.css";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -86,7 +87,7 @@ function HomePage() {
     });
   }
   return isAuthenticated ? (
-    <div className="App">
+    <div className="App" id="todo-container">
       <h1>Reminders</h1>
       {error && <div>An error occurred: {error.message}</div>}
       {isPending ? (
@@ -94,13 +95,19 @@ function HomePage() {
       ) : (
         <div className="card">
           {data?.todo.map((item) => (
-            <div key={item.id}>
-              <input type="checkbox" checked={item.done} />
-              <span
-                style={{ textDecoration: item.done ? "line-through" : "none" }}
-              >
-                {item.todo} - Due on: {formatDate(item.due)}
-              </span>
+            <div key={item.id} className="todo-container">
+              <div className="todo">
+                <input
+                  type="checkbox"
+                  checked={item.done}
+                  className="checkbox-container"
+                />
+                <div className="item">{item.todo}</div>
+              </div>
+              <div>
+                <span className="due">Due: </span>
+                {formatDate(item.due)}
+              </div>
             </div>
           ))}
         </div>
@@ -108,20 +115,21 @@ function HomePage() {
 
       <form onSubmit={handleSubmit}>
         <h2>Add Todo</h2>
-        <input
-          type="text"
-          placeholder="Add todo..."
-          value={todoText}
-          onChange={(e) => setTodoText(e.target.value)}
-        />
-        <DatePicker
-          selected={due}
-          onChange={(date: Date) => setDue(date)}
-          placeholderText="Due date"
-        />
-        <button className="glow-on-hover" type="submit">
-          Add
-        </button>
+        <div className="todo-info">
+          <div>
+            <input
+              className="todo-input"
+              type="text"
+              placeholder="Add todo..."
+              value={todoText}
+              onChange={(e) => setTodoText(e.target.value)}
+            />
+          </div>
+          <DatePicker selected={due} onChange={(date: Date) => setDue(date)} />
+          <button className="glow-on-hover" type="submit">
+            Add
+          </button>
+        </div>
       </form>
     </div>
   ) : (

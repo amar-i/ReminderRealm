@@ -3,8 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
-export const Route = createFileRoute("/_authenticated/")({
+export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
@@ -18,6 +19,7 @@ type Todo = {
 function HomePage() {
   const [todoText, setTodoText] = useState("");
   const [due, setDue] = useState<Date | null>(null);
+  const { isAuthenticated, login, register } = useKindeAuth();
 
   async function getTodo() {
     const res = await fetch(import.meta.env.VITE_APP_API_URL + "/todo");
@@ -67,7 +69,7 @@ function HomePage() {
       year: "numeric",
     });
   }
-  return (
+  return isAuthenticated ? (
     <div className="App">
       <h1>Reminders</h1>
       {error && <div>An error occurred: {error.message}</div>}
@@ -75,13 +77,13 @@ function HomePage() {
         <div>Loading...</div>
       ) : (
         <div className="card">
-          {data?.todo.map((data) => (
-            <div key={data.id}>
-              <input type="checkbox" checked={data.done} />
+          {data?.todo.map((item) => (
+            <div key={item.id}>
+              <input type="checkbox" checked={item.done} />
               <span
-                style={{ textDecoration: data.done ? "line-through" : "none" }}
+                style={{ textDecoration: item.done ? "line-through" : "none" }}
               >
-                {data.todo} - Due on:{formatDate(data.due)}
+                {item.todo} - Due on: {formatDate(item.due)}
               </span>
             </div>
           ))}
@@ -96,13 +98,27 @@ function HomePage() {
           value={todoText}
           onChange={(e) => setTodoText(e.target.value)}
         />
-        <DatePicker // Use DatePicker for due
+        <DatePicker
           selected={due}
-          onChange={(date) => setDue(date)}
-          placeholderText="Due"
+          onChange={(date: Date) => setDue(date)}
+          placeholderText="Due date"
         />
-        <button type="submit">Add</button>
+        <button className="glow-on-hover" type="submit">
+          Add
+        </button>
       </form>
+    </div>
+  ) : (
+    // Render this if the user is not authenticated
+    <div className="App">
+      <h1>Welcome to Reminder Realm</h1>
+      <p>Please log in to manage your reminders.</p>
+      <button className="glow-on-hover" onClick={() => login()}>
+        Log In
+      </button>
+      <button className="glow-on-hover" onClick={() => register()}>
+        Register
+      </button>
     </div>
   );
 }

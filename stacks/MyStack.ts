@@ -1,7 +1,17 @@
 import { StackContext, Api, StaticSite } from "sst/constructs";
 
 export function API({ stack }: StackContext) {
+  const audience = `api-ReminderRealm-${stack.stage}`;
   const api = new Api(stack, "api", {
+    authorizers: {
+      myAuthorizer: {
+        type: "jwt",
+        jwt: {
+          issuer: "https://reminderrealm.kinde.com",
+          audience: [audience],
+        },
+      },
+    },
     defaults: {
       function: {
         environment: {
@@ -13,7 +23,7 @@ export function API({ stack }: StackContext) {
       "GET /": "packages/functions/src/lambda.handler",
       "GET /todo": "packages/functions/src/todo.handler",
       "POST /todo": "packages/functions/src/todo.handler",
-      "PUT /todo/{id}": "packages/functions/src/todo.handler",
+      "DELETE /todo/{id}": "packages/functions/src/todo.handler",
       "GET /profile": "packages/functions/src/profile.handler",
     },
   });
@@ -24,6 +34,7 @@ export function API({ stack }: StackContext) {
     buildCommand: "npm run build",
     environment: {
       VITE_APP_API_URL: api.url,
+      VITE_APP_KINDE_AUDIENCE: audience,
     },
   });
 
